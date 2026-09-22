@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Guard from "@/components/Guard";
 
 export default function Dashboard() {
   const [usuario, setUsuario] = useState(null);
@@ -150,62 +151,82 @@ export default function Dashboard() {
           </div>
         </div>
 
+
         {/* NAVEGACIÓN */}
         <nav className="flex-1 py-6">
 
-          {/* DASHBOARD ACTIVO */}
+          {/* DASHBOARD - visible para todos los roles */}
           <div
             className="
-              mx-3
-              mb-2
-              px-5
-              py-3
-              bg-[#209b70]
-              rounded-xl
-              flex
-              items-center
-              gap-3
-              font-semibold
-              text-sm
-            "
+      mx-3
+      mb-2
+      px-5
+      py-3
+      bg-[#209b70]
+      rounded-xl
+      flex
+      items-center
+      gap-3
+      font-semibold
+      text-sm
+    "
           >
             <span className="text-lg">⌂</span>
             Dashboard
           </div>
 
-          <div className="mx-3 px-5 py-3 rounded-xl flex items-center gap-3 text-sm text-white/85 hover:bg-white/10 transition cursor-pointer">
-            <span>▦</span>
-            Materiales
-          </div>
+          {/* MATERIALES - visible con permiso ver_inventario */}
+          <Guard permiso="ver_inventario">
+            <div className="mx-3 px-5 py-3 rounded-xl flex items-center gap-3 text-sm text-white/85 hover:bg-white/10 transition cursor-pointer">
+              <span>▦</span>
+              Materiales
+            </div>
+          </Guard>
 
-          <div className="mx-3 px-5 py-3 rounded-xl flex items-center gap-3 text-sm text-white/85 hover:bg-white/10 transition cursor-pointer">
-            <span>▤</span>
-            Trazabilidad
-          </div>
+          {/* TRAZABILIDAD - visible con permiso ver_trazabilidad */}
+          <Guard permiso="ver_trazabilidad">
+            <div className="mx-3 px-5 py-3 rounded-xl flex items-center gap-3 text-sm text-white/85 hover:bg-white/10 transition cursor-pointer">
+              <span>▤</span>
+              Trazabilidad
+            </div>
+          </Guard>
 
-          <div className="mx-3 px-5 py-3 rounded-xl flex items-center gap-3 text-sm text-white/85 hover:bg-white/10 transition cursor-pointer">
-            <span>◉</span>
-            Reportes
-          </div>
+          {/* REPORTES - visible con permiso generar_reporte */}
+          <Guard permiso="generar_reporte">
+            <div className="mx-3 px-5 py-3 rounded-xl flex items-center gap-3 text-sm text-white/85 hover:bg-white/10 transition cursor-pointer">
+              <span>◉</span>
+              Reportes
+            </div>
+          </Guard>
 
-          <div className="mx-3 px-5 py-3 rounded-xl flex items-center gap-3 text-sm text-white/85 hover:bg-white/10 transition cursor-pointer">
-            <span>⇄</span>
-            Transferencias
-          </div>
+          {/* TRANSFERENCIAS - solo visible para Jefe de Bodega */}
+          <Guard permiso="transferir_material">
+            <div className="mx-3 px-5 py-3 rounded-xl flex items-center gap-3 text-sm text-white/85 hover:bg-white/10 transition cursor-pointer">
+              <span>⇄</span>
+              Transferencias
+            </div>
+          </Guard>
 
-          <div className="mx-3 px-5 py-3 rounded-xl flex items-center gap-3 text-sm text-white/85 hover:bg-white/10 transition cursor-pointer">
-            <span>▥</span>
-            Pedidos
-          </div>
+          {/* PEDIDOS - solo visible para Encargado */}
+          <Guard permiso="solicitar_material">
+            <div className="mx-3 px-5 py-3 rounded-xl flex items-center gap-3 text-sm text-white/85 hover:bg-white/10 transition cursor-pointer">
+              <span>▥</span>
+              Pedidos
+            </div>
+          </Guard>
 
           <div className="mx-6 my-5 border-t border-white/15" />
 
-          <div className="mx-3 px-5 py-3 rounded-xl flex items-center gap-3 text-sm text-white/85 hover:bg-white/10 transition cursor-pointer">
-            <span>⚙</span>
-            Configuración
-          </div>
+          {/* CONFIGURACIÓN - solo visible para Administrador */}
+          <Guard permiso="gestionar_usuario">
+            <div className="mx-3 px-5 py-3 rounded-xl flex items-center gap-3 text-sm text-white/85 hover:bg-white/10 transition cursor-pointer">
+              <span>⚙</span>
+              Configuración
+            </div>
+          </Guard>
 
         </nav>
+
 
         {/* CERRAR SESIÓN - SOLO VISUAL POR AHORA */}
         <div className="p-5">
@@ -447,12 +468,55 @@ export default function Dashboard() {
                 </p>
 
                 <p className="text-gray-800 font-semibold mt-2">
-                  {contexto.ubicacion}
+                  {contexto.ubicacion} 
                 </p>
               </div>
 
             </div>
+            {/* ================================================== */}
+            {/* ACCIONES SEGÚN ROL */}
+            {/* ================================================== */}
 
+            <div className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-sm p-7">
+
+              <h3 className="text-lg font-semibold text-[#173d30] mb-5">
+                Acciones disponibles
+              </h3>
+
+              <div className="flex flex-wrap gap-3">
+
+                {/* APROBAR SOLICITUD - solo Jefe de Bodega */}
+                <Guard permiso="aprobar_solicitud">
+                  <button className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-xl transition cursor-pointer">
+                    Aprobar solicitud
+                  </button>
+                </Guard>
+
+                {/* SOLICITAR MATERIAL - solo Encargado */}
+                <Guard permiso="solicitar_material">
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition cursor-pointer">
+                    Solicitar material
+                  </button>
+                </Guard>
+
+                {/* EMITIR VALE - solo Jefa de Construcción */}
+                <Guard permiso="emitir_vale">
+                  <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-xl transition cursor-pointer">
+                    Emitir vale
+                  </button>
+                </Guard>
+
+                {/* GESTIONAR USUARIOS - solo Administrador */}
+                <Guard permiso="gestionar_usuario">
+                  <button className="bg-gray-700 hover:bg-gray-800 text-white font-semibold px-6 py-3 rounded-xl transition cursor-pointer">
+                    Gestionar usuarios
+                  </button>
+                </Guard>
+
+              </div>
+
+            </div>
+            
           </div>
 
         </div>
