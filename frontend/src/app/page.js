@@ -23,6 +23,10 @@ const [cargando, setCargando] = useState(false);
 
 sessionStorage.setItem("usuario", JSON.stringify(usuario));
 
+// Cookie para que el middleware del servidor pueda leer el rol.
+document.cookie = `usuario_rol=${encodeURIComponent(usuario.rol)}; path=/; max-age=3600; SameSite=Lax`;
+                                                            //este es el tiempo en el tarda, se pude 
+                                                                   // editar depues, 3600 es 1h
 router.push("/contexto");
   } catch (error) {
     setError(error.message);

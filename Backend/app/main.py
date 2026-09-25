@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from app.modules.contexto.router import router as contexto_router
 from app.modules.bodega.router import router as bodega_router
 from app.modules.login.router import router as login_router
+from app.modules.permisos.router import router as permisos_router
+
 # Aplicación principal de FastAPI.
 app = FastAPI(
     title="SGCI API",
@@ -35,3 +37,4 @@ def inicio():
 app.include_router(bodega_router)
 app.include_router(login_router)
 app.include_router(contexto_router)
+app.include_router(permisos_router)
